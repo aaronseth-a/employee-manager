@@ -1,5 +1,13 @@
 const inquirer = require('inquirer');
 
+function addGap(num){
+    let output="";
+    for(let i=0; i < num; i++ ){
+        output += " ";
+    }
+    return output;
+}
+
 function mainmenu(db){
     inquirer.prompt([{
         type: 'list',
@@ -48,48 +56,61 @@ function viewDepartments(db){
         console.log('\n');
         mainmenu(db);
     });
-    // inquirer.prompt([{
-    //     type: 'list',
-    //     message:'? What would you like to do?',
-    //     choices: [
-    //         'View All Departments',
-    //         'View All Roles',
-    //         'View All Employees',
-    //         'Add Department',
-    //         'Add Role',
-    //         'Add Employee',
-    //         'Update Employee Role'
-    //     ],
-    //     name: 'selection'
-    // }])
-    //     .then((data)=>{
-    //         switch(data.selection){
-    //             case 'View All Departments': viewDepartments();
-    //                 break;
-    //             case 'View All Roles': viewRoles();
-    //                 break;
-    //             case 'View All Employees': viewEmployees();
-    //                 break;
-    //             case 'Add Department': addDepartment();
-    //                 break;
-    //             case 'Add Role': addRole();
-    //                 break;
-    //             case 'Add Employee': addEmployee();
-    //                 break;
-    //             case 'Update Employee Role': changeEmployeeRole();
-    //                 break;
-    //         }
-    //     })
 };
-function viewEmployees(){};
-function viewRoles(){};
-function addDepartment(){};
-function addRole(){};
-function addEmployee(){};
-function changeEmployeeRole(){};
-function removeRole(){};
-function removeDepartment(){};
-function removeEmployee(){};
+
+function addDepartment(db){
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'Please name the new department:',
+            name: 'newDeptName'
+        }
+    ])
+    .then((data)=>{
+        let ansQuery = `INSERT INTO departments (name) VALUES ('${data.newDeptName}')`;
+
+        db.query(ansQuery, (err, results)=>{
+            if(err) throw err;
+            console.log(`Department ${data.newDeptName} added successfully!`);
+            mainmenu(db);
+        });
+        
+    });
+
+    
+};
+
+
+function viewEmployees(db){
+    db.query('SELECT * FROM employees', (err, results)=>{
+        console.log(`\nid\tfirst name\tlast name${addGap(3)}\trole${addGap(9)}\tdepartment${addGap(10)}\tsalary${addGap(9)}\tmanager\n--\t----------\t---------\t---------------\t----------------\t----------\t----------------`);
+        for(let row of results){
+            console.log(`${row.id}\t${row.firstName}`);
+        }
+        console.log('\n');
+        mainmenu(db);
+    });
+};
+function viewRoles(db){};
+function addRole(db){};
+function addEmployee(db){};
+function changeEmployeeRole(db){};
+
+
+// function removeDepartment(){
+//     let resList =[];
+//     db.query('SELECT * FROM departments', (err, results)=>{
+//         for(let row of results){
+//             resList.push(row.name);
+//         }
+//     });
+
+//     console.log(resList);
+// };
+// function removeRole(){};
+// function removeEmployee(){};
+
+
 
 module.exports = {   
     mainmenu,
@@ -100,7 +121,7 @@ module.exports = {
     addRole,
     addEmployee,
     changeEmployeeRole,
-    removeRole,
-    removeDepartment,
-    removeEmployee
+    // removeRole,
+    // removeDepartment,
+    // removeEmployee
 };
