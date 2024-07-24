@@ -1,0 +1,11 @@
+{
+  "scripts":{
+    "start": "node server.js",
+    "mysql": "mysql -u root -p"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.10.2"
+  }
+}
